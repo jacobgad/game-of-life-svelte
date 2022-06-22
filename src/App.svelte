@@ -82,6 +82,11 @@
 		grid = generateGrid(gridSize);
 		gen = 0;
 	}
+
+	function handleRandom() {
+		grid = generateRandomGrid(gridSize, dencity);
+		gen = 0;
+	}
 </script>
 
 <main class="grid justify-center mx-[2.5vw] my-6 gap-4">
@@ -99,7 +104,7 @@
 			disabled={running}>Clear</button
 		>
 		<button
-			on:click={() => (grid = generateRandomGrid(gridSize, dencity))}
+			on:click={handleRandom}
 			class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-24 disabled:opacity-50 disabled:cursor-not-allowed"
 			disabled={running}>Random</button
 		>
@@ -132,7 +137,7 @@
 
 	<div class="flex justify-between items-center gap-4">
 		<p class="font-semibold text-lg">Generation: {gen}</p>
-		<div>
+		<div class="flex items-center gap-2">
 			<input bind:checked={showGridLines} type="checkbox" name="gridLines" id="gridLines" />
 			<label for="gridLines">Grid Lines</label>
 		</div>
@@ -157,7 +162,10 @@
 	</div>
 </main>
 
-<div class="mx-[2.5vw] mb-6 border-t-2 border-l-2 {!showGridLines && 'border-r-2 border-b-2'}">
+<div
+	class="mx-[2.5vw] mb-6 border-t-[1px] border-l-[1px] 
+{!showGridLines && 'border-r-[1px] border-b-[1px]'}"
+>
 	{#each grid as row}
 		<div class="flex">
 			{#each row as cell}
@@ -165,7 +173,7 @@
 					on:click={() => (cell ? (cell = 0) : (cell = 1))}
 					class="w-full aspect-square  
           {cell && 'bg-blue-300'} 
-          {showGridLines && 'border-b-2 border-r-2'}"
+          {showGridLines && 'border-b-[1px] border-r-[1px]'}"
 				/>
 			{/each}
 		</div>
