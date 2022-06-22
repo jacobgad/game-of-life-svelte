@@ -1,60 +1,5 @@
 <script lang="ts">
-	interface GridSize {
-		cols: number;
-		rows: number;
-	}
-
-	const neighbours = [
-		[-1, -1],
-		[-1, 0],
-		[-1, 1],
-		[0, -1],
-		[0, 1],
-		[1, -1],
-		[1, 0],
-		[1, 1],
-	];
-
-	function generateGrid(gridSize: GridSize) {
-		let grid: number[][] = [];
-		for (let i = 0; i < gridSize.rows; i++) {
-			grid.push(Array.from(Array(gridSize.cols), () => 0));
-		}
-		return grid;
-	}
-
-	function generateRandomGrid(gridSize: GridSize, randPopDenc: number) {
-		let grid: number[][] = [];
-		for (let i = 0; i < gridSize.rows; i++) {
-			grid.push(
-				Array.from(Array(gridSize.cols), () => (Math.random() < randPopDenc / 100 ? 1 : 0))
-			);
-		}
-		return grid;
-	}
-
-	function getNeighbours(grid: number[][], i: number, j: number) {
-		let numNeighbours = 0;
-		neighbours.map((n) => {
-			const realI = i + n[1];
-			const realJ = j + n[0];
-			if (realI >= 0 && realI < grid.length && realJ >= 0 && realJ < grid[0].length)
-				numNeighbours += grid[realI][realJ];
-		});
-		return numNeighbours;
-	}
-
-	function getNextGen(grid: number[][]) {
-		let newGrid = grid.map((arr) => arr.slice());
-		for (let i = 0; i < grid.length; i++) {
-			for (let j = 0; j < grid[0].length; j++) {
-				const neighbours = getNeighbours(grid, i, j);
-				if (neighbours < 2 || neighbours > 3) newGrid[i][j] = 0;
-				if (neighbours === 3) newGrid[i][j] = 1;
-			}
-		}
-		return newGrid;
-	}
+	import { generateGrid, generateRandomGrid, getNextGen, GridSize } from './utils';
 
 	let gridSize: GridSize = { cols: 40, rows: 20 };
 	let grid: number[][] = generateGrid(gridSize);
@@ -89,7 +34,7 @@
 	}
 </script>
 
-<main class="grid justify-center mx-[2.5vw] my-6 gap-4">
+<main class="grid justify-center mx-[2.5vw] mt-4 mb-8 gap-4">
 	<h1 class="text-center text-3xl font-semibold">Game of Life</h1>
 
 	<div class="flex justify-center gap-4">
@@ -110,61 +55,63 @@
 		>
 	</div>
 
-	<div class="flex justify-between items-center gap-4">
-		<div class="flex border-2 rounded-md overflow-hidden">
-			<label class="bg-gray-100 border-r-2 p-2" for="width">Width</label>
-			<input
-				bind:value={gridSize.cols}
-				class="p-1 w-full"
-				type="number"
-				name="width"
-				id="width"
-				placeholder="Width"
-			/>
+	<div class="grid xl:flex xl:justify-evenly gap-4 xl:gap-8 xl:w-[90vw]">
+		<div class="flex justify-between items-center gap-4 w-full">
+			<p class="font-semibold text-lg">Generation: {gen}</p>
+			<div class="flex items-center gap-2">
+				<input bind:checked={showGridLines} type="checkbox" name="gridLines" id="gridLines" />
+				<label for="gridLines">Grid Lines</label>
+			</div>
 		</div>
-		<div class=" flex border-2 rounded-md overflow-hidden">
-			<label class="bg-gray-100 border-r-2 p-2" for="height">Height</label>
-			<input
-				bind:value={gridSize.rows}
-				class="p-1 w-full"
-				type="number"
-				name="height"
-				id="height"
-				placeholder="Height"
-			/>
-		</div>
-	</div>
 
-	<div class="flex justify-between items-center gap-4">
-		<p class="font-semibold text-lg">Generation: {gen}</p>
-		<div class="flex items-center gap-2">
-			<input bind:checked={showGridLines} type="checkbox" name="gridLines" id="gridLines" />
-			<label for="gridLines">Grid Lines</label>
+		<div class="flex justify-between items-center gap-4 w-full">
+			<div class="flex border-2 rounded-md overflow-hidden">
+				<label class="bg-gray-100 border-r-2 p-2" for="width">Width</label>
+				<input
+					bind:value={gridSize.cols}
+					class="px-3 w-full outline-none"
+					type="number"
+					name="width"
+					id="width"
+					placeholder="Width"
+				/>
+			</div>
+			<div class=" flex border-2 rounded-md overflow-hidden">
+				<label class="bg-gray-100 border-r-2 p-2" for="height">Height</label>
+				<input
+					bind:value={gridSize.rows}
+					class="px-3 w-full outline-none"
+					type="number"
+					name="height"
+					id="height"
+					placeholder="Height"
+				/>
+			</div>
 		</div>
-	</div>
 
-	<div class="flex justify-between items-center gap-8">
-		<div class="w-full grid gap-2">
-			<label for="speed">Speed: {speed}</label>
-			<input bind:value={speed} type="range" name="speed" id="speed" />
-		</div>
-		<div class="w-full grid gap-2">
-			<label for="dencity">Dencity: {dencity}</label>
-			<input
-				bind:value={dencity}
-				type="range"
-				name="dencity"
-				id="dencity"
-				class="disabled:opacity-50 disabled:cursor-not-allowed"
-				disabled={running}
-			/>
+		<div class="flex justify-between items-center gap-8 w-full">
+			<div class="w-full grid gap-2">
+				<label for="speed">Speed: {speed}</label>
+				<input bind:value={speed} type="range" name="speed" id="speed" />
+			</div>
+			<div class="w-full grid gap-2">
+				<label for="dencity">Dencity: {dencity}</label>
+				<input
+					bind:value={dencity}
+					type="range"
+					name="dencity"
+					id="dencity"
+					class="disabled:opacity-50 disabled:cursor-not-allowed"
+					disabled={running}
+				/>
+			</div>
 		</div>
 	</div>
 </main>
 
 <div
 	class="mx-[2.5vw] mb-6 border-t-[1px] border-l-[1px] 
-{!showGridLines && 'border-r-[1px] border-b-[1px]'}"
+	{!showGridLines && 'border-r-[1px] border-b-[1px]'}"
 >
 	{#each grid as row}
 		<div class="flex">
