@@ -5,7 +5,7 @@ A simple demo of Conway's Game of Life written in svelte, typescript & tailwind 
 
 ## Demo
 
-https://jacobgad-game-of-life-svelte.netlify.app/
+https://game-of-life-svelte.jacobgad.com/
 
 
 ## Screenshots
